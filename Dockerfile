@@ -7,7 +7,7 @@ COPY --from=yosys /opt/yosys/ /opt/yosys/
 COPY --from=iverilog /opt/iverilog/ /opt/iverilog/
 
 ENV PATH=${PATH}:/opt/yosys/bin:/opt/iverilog/bin:/opt/fault/bin \
-    PYTHONPATH=/usr/lib/python3.8/site-packages:/opt/fault/lib/python3.8/site-packages
+    PYTHONPATH=/usr/lib/python3.8/site-packages:/opt/fault/lib/python3.8/site-packages \
     REVISION=master
 RUN apk add --no-cache --virtual fault-build-dependencies \
     git \
