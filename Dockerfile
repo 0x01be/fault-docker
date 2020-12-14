@@ -22,18 +22,18 @@ RUN apk add --no-cache --virtual fault-build-dependencies \
     py3-pip &&\
     pip install -U pip &&\
     pip install --prefix=/opt/fault jinja2 https://github.com/PyHDI/Pyverilog/archive/develop.zip &&\
-    git clone --depth 1 ${REVISION} https://github.com/Cloud-V/Fault.git /fault  &&\
+    git clone --depth 1 --branch ${REVISION} https://github.com/Cloud-V/Fault.git /fault  &&\
     git clone --depth 1 https://github.com/hsluoyz/Atalanta.git /atalanta &&\
     cd /atalanta &&\
     make &&\
     mkdir -p /opt/fault/bin &&\
     cp /atalanta/atalanta /opt/fault/bin/ &&\
-    chmod +x /opt/fault/bin/atalanta &&\
-    curl -sL http://tiger.ee.nctu.edu.tw/course/Testing2018/assignments/hw0/podem.tgz  | tar -xzf - &&\
+    cd / &&\
+    curl -sL http://tiger.ee.nctu.edu.tw/course/Testing2018/assignments/hw0/podem.tgz  | tar -xz &&\
     cd /podem &&\
     make &&\
     cp /podem/atpg /opt/fault/bin/ &&\
-    chmod +x /opt/fault/bin/atpg
+    chmod +x /opt/fault/bin/*
 
 ENV PYVERILOG_IVERILOG=/opt/iverilog/bin/iverilog \
     FAULT_IVERILOG=/opt/iverilog/bin/iverilog \
