@@ -1,49 +1,16 @@
 FROM 0x01be/yosys as yosys
 FROM 0x01be/iverilog as iverilog
 
-FROM 0x01be/swift as build
+FROM 0x01be/fault:build as build
+
+FROM 0x01be/base
 
 COPY --from=yosys /opt/yosys/ /opt/yosys/
 COPY --from=iverilog /opt/iverilog/ /opt/iverilog/
+COPY --from=build /opt/fault/ /opt/fault/
 
 ENV PATH=${PATH}:/opt/yosys/bin:/opt/iverilog/bin:/opt/fault/bin \
     PYTHONPATH=/usr/lib/python3.8/site-packages:/opt/fault/lib/python3.8/site-packages
-    REVISION=master
-RUN apk add --no-cache --virtual fault-build-dependencies \
-    git \
-    build-base \
-    tar \
-    curl \
-    flex \
-    bison \
-    readline-dev \
-    ncurses-dev \
-    python3-dev \
-    py3-pip &&\
-    pip install -U pip &&\
-    pip install --prefix=/opt/fault jinja2 https://github.com/PyHDI/Pyverilog/archive/develop.zip &&\
-    git clone --depth 1 ${REVISION} https://github.com/Cloud-V/Fault.git /fault  &&\
-    git clone --depth 1 https://github.com/hsluoyz/Atalanta.git /atalanta &&\
-    cd /atalanta &&\
-    make &&\
-    mkdir -p /opt/fault/bin &&\
-    cp /atalanta/atalanta /opt/fault/bin/ &&\
-    chmod +x /opt/fault/bin/atalanta &&\
-    curl -sL http://tiger.ee.nctu.edu.tw/course/Testing2018/assignments/hw0/podem.tgz  | tar -xzf - &&\
-    cd /podem &&\
-    make &&\
-    cp /podem/atpg /opt/fault/bin/ &&\
-    chmod +x /opt/fault/bin/atpg
-
-ENV PYVERILOG_IVERILOG=/opt/iverilog/bin/iverilog \
-    FAULT_IVERILOG=/opt/iverilog/bin/iverilog \
-    FAULT_VVP=/opt/iverilog/bin/vvp \
-    FAULT_YOSYS=/opt/yosys/bin/yosys \
-    FAULT_IVL_BASE=/opt/iverilog/lib/ivl
-
-# For Pyverilog:
-RUN ln -s $FAULT_IVL_BASE "/usr/local/lib/ivl" 
-
-WORKDIR /fault
-RUN INSTALL_DIR=/opt/fault swift install.swift
+RUN apk add --no-cache --virtual fault-runtime-dependencies \
+    libstdc++
  
