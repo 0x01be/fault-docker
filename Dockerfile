@@ -15,6 +15,7 @@ ENV PATH=${PATH}:/opt/yosys/bin:/opt/iverilog/bin:/opt/fault/bin \
     FAULT_VVP=/opt/iverilog/bin/vvp \
     FAULT_YOSYS=/opt/yosys/bin/yosys \
     FAULT_IVL_BASE=/opt/iverilog/lib/ivl \
+    INSTALL_DIR=/opt/fault \
     REVISION=master
 RUN apk add --no-cache --virtual fault-build-dependencies \
     git \
@@ -43,5 +44,5 @@ RUN apk add --no-cache --virtual fault-build-dependencies \
     chmod +x /opt/fault/bin/* &&\
     ln -s ${FAULT_IVL_BASE} /usr/local/lib/ivl
 
-RUN INSTALL_DIR=/opt/fault swift install.swift
+RUN swift install.swift
  
